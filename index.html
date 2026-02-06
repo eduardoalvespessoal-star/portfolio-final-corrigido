@@ -43,7 +43,7 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            cursor: none; /* Cursor nativo escondido para usar o customizado */
+            cursor: none; /* Cursor nativo escondido */
         }
 
         /* 1. NOISE OVERLAY */
@@ -71,21 +71,7 @@
             top: 0; left: 0;
         }
 
-        /* 4. REVEAL ANIMATION (EDITORIAL - LIMPO) */
-        .reveal-text { overflow: hidden; display: inline-block; vertical-align: bottom; }
-        .reveal-text span {
-            display: inline-block;
-            transform: translateY(100%);
-            opacity: 0;
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        /* Classe ativada via JS */
-        .reveal-active span {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* 5. IMAGENS & HOVER */
+        /* 4. IMAGENS & HOVER */
         .luxury-filter {
             filter: grayscale(100%) contrast(110%) brightness(95%);
             transition: all 0.8s cubic-bezier(0.33, 1, 0.68, 1);
@@ -95,7 +81,7 @@
             transform: scale(1.02);
         }
 
-        /* 6. UTILITÁRIOS */
+        /* 5. UTILITÁRIOS */
         #progress-bar {
             position: fixed; top: 0; left: 0; height: 2px; background: #fff;
             width: 0%; z-index: 100; transition: width 0.1s;
@@ -107,6 +93,15 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .smooth-gallery { scroll-behavior: smooth; }
+        
+        /* Reveal suave */
+        .reveal-up {
+            transform: translateY(30px); opacity: 0;
+            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal-visible {
+            transform: translateY(0); opacity: 1;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-white selection:text-black">
@@ -144,30 +139,23 @@
             <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent z-0"></div>
 
             <div class="max-w-[1400px] mx-auto w-full relative z-10">
-                <div class="mb-12">
-                    <div class="reveal-text">
-                        <span class="text-xs font-light tracking-[0.5em] uppercase text-white/50 mb-8 block pl-1">Brand Strategist & Creative Designer</span>
-                    </div>
-                    
-                    <h1 class="font-display font-semibold text-[11vw] leading-[0.82] tracking-tighter text-white uppercase italic mix-blend-screen">
-                        <div class="reveal-text"><span class="block">Design</span></div><br>
-                        <div class="reveal-text"><span class="block">Estratégico</span></div><br>
-                        <div class="reveal-text"><span class="block text-transparent" style="-webkit-text-stroke: 1px rgba(255,255,255,0.8);">& Marcas.</span></div>
-                    </h1>
+                <div class="mb-12 reveal-up">
+                    <span class="text-xs font-light tracking-[0.5em] uppercase text-white/50 block pl-1">Brand Strategist & Creative Designer</span>
                 </div>
                 
-                <div class="flex flex-col md:flex-row justify-between items-end gap-12 mt-24 border-t border-white/10 pt-12">
+                <div class="flex flex-col md:flex-row justify-between items-end gap-12 mt-12 border-t border-white/10 pt-12">
                     <div class="flex flex-col md:flex-row gap-8 items-center md:items-center">
-                        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-2xl group cursor-none reveal-text">
-                            <span class="block w-full h-full"> <img src="./assets/img/gui-profile.jpg" alt="Guilherme Gonçalves" class="luxury-filter w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-700">
+                        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-2xl group cursor-none reveal-up" style="transition-delay: 0.1s;">
+                            <span class="block w-full h-full"> 
+                                <img src="./assets/img/gui-profile.jpg" alt="Guilherme Gonçalves" class="luxury-filter w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-700">
                             </span>
                         </div>
-                        <p class="max-w-md text-lg md:text-xl font-light leading-relaxed text-light/70 text-center md:text-left reveal-text">
-                            <span class="block">Especialista em unir <span class="text-white font-normal">identidade visual</span> e posicionamento estratégico.</span>
+                        <p class="max-w-md text-lg md:text-xl font-light leading-relaxed text-light/70 text-center md:text-left reveal-up" style="transition-delay: 0.2s;">
+                            Especialista em unir <span class="text-white font-normal">identidade visual</span> e posicionamento estratégico.
                         </p>
                     </div>
                     
-                    <div class="flex flex-col items-end animate-float">
+                    <div class="flex flex-col items-end animate-float reveal-up" style="transition-delay: 0.3s;">
                         <div class="w-14 h-14 border border-white/10 rounded-full flex items-center justify-center text-white/30 hover:border-white hover:text-white transition-all duration-500 cursor-none">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M7 13l5 5 5-5M7 6l5 5 5-5" /></svg>
                         </div>
@@ -264,27 +252,22 @@
     </div>
 
     <script>
-        // --- 1. PRELOADER & HERO REVEAL ---
+        // --- 1. PRELOADER & REVEAL ---
         window.addEventListener('load', () => {
             const bar = document.getElementById('loader-bar');
             const preloader = document.getElementById('preloader');
             
-            // 1. Enche a barra
             bar.style.width = '100%';
             
-            // 2. Remove o preloader
             setTimeout(() => {
                 preloader.style.transform = 'translateY(-100%)';
                 
-                // 3. Dispara animações do Hero
+                // Dispara animações de entrada
                 setTimeout(() => {
-                    document.querySelectorAll('.reveal-text').forEach((el, index) => {
-                        setTimeout(() => {
-                            el.classList.add('reveal-active');
-                        }, index * 100);
+                    document.querySelectorAll('.reveal-up').forEach((el, index) => {
+                        setTimeout(() => el.classList.add('reveal-visible'), index * 100);
                     });
                 }, 500);
-                
             }, 1000);
         });
 
@@ -323,8 +306,12 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('reveal-visible');
+                    // Para elementos com a classe scroll-reveal antiga
+                    if(entry.target.classList.contains('scroll-reveal')) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
                 }
             });
         }, { threshold: 0.1 });
@@ -344,7 +331,7 @@
             document.getElementById("progress-bar").style.width = scrolled + "%";
         };
 
-        // --- 5. GALERIA (CORRIGIDA + LOOP) ---
+        // --- 5. GALERIA INFINITA E CORRIGIDA ---
         const projects = {
             'coxinhoca': ['./assets/img/coxinhoca-hero.jpg', './assets/img/coxinhoca-detail1.jpg', './assets/img/coxinhoca-detail2.jpg'],
             'ciara': ['./assets/img/ciara-hero.jpg', './assets/img/ciara-detail1.jpg', './assets/img/ciara-detail2.jpg'],
@@ -371,7 +358,7 @@
                 container.appendChild(wrapper);
             });
 
-            // FIX: RESETA O SCROLL PARA 0 INSTANTANEAMENTE
+            // 1. FIX: RESETA O SCROLL PARA O COMEÇO SEMPRE QUE ABRIR
             container.scrollTo({ left: 0, behavior: 'instant' });
 
             lightbox.classList.remove('hidden');
@@ -387,22 +374,24 @@
             }, 500);
         }
 
+        // 2. FIX: LÓGICA DE LOOP INFINITO (Simulado)
         function scrollGallery(direction) {
             const width = window.innerWidth;
             const currentScroll = container.scrollLeft;
             const maxScroll = container.scrollWidth - width;
+            const tolerance = 10; // Margem de erro do scroll
 
-            // LÓGICA DE LOOP (INFINITO FEEL)
-            let newScroll = currentScroll + (direction * width);
+            let nextPos = currentScroll + (direction * width);
 
-            // Se tentar ir além do fim (direita), volta pro começo
-            if (newScroll > maxScroll + 50) { // +50 margem de erro
+            // Se tentar ir além da última foto -> Volta para o início
+            if (nextPos > maxScroll + tolerance) {
                  container.scrollTo({ left: 0, behavior: 'smooth' });
             } 
-            // Se tentar ir antes do começo (esquerda), vai pro fim
-            else if (newScroll < -50) {
+            // Se tentar ir antes da primeira foto -> Vai para o final
+            else if (nextPos < -tolerance) {
                  container.scrollTo({ left: maxScroll, behavior: 'smooth' });
             } 
+            // Comportamento normal
             else {
                  container.scrollBy({ left: direction * width, behavior: 'smooth' });
             }

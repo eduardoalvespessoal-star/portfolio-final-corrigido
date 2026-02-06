@@ -43,7 +43,7 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            cursor: none; /* Esconde o cursor padrão */
+            cursor: none; /* Cursor nativo escondido para usar o customizado */
         }
 
         /* 1. NOISE OVERLAY */
@@ -63,7 +63,7 @@
             width: 0%; height: 2px; background: white; transition: width 1s ease-in-out;
         }
 
-        /* 3. CURSOR PERSONALIZADO (Restaurado) */
+        /* 3. CURSOR PERSONALIZADO */
         .custom-cursor {
             width: 16px; height: 16px; background: #fff; border-radius: 50%;
             position: fixed; pointer-events: none; mix-blend-mode: difference;
@@ -71,14 +71,16 @@
             top: 0; left: 0;
         }
 
-        /* 4. REVEAL ANIMATION (Restaurado) */
-        .reveal-overflow { overflow: hidden; display: inline-block; vertical-align: bottom; }
-        .reveal-content {
+        /* 4. REVEAL ANIMATION (EDITORIAL - LIMPO) */
+        .reveal-text { overflow: hidden; display: inline-block; vertical-align: bottom; }
+        .reveal-text span {
+            display: inline-block;
             transform: translateY(100%);
             opacity: 0;
             transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .reveal-active .reveal-content {
+        /* Classe ativada via JS */
+        .reveal-active span {
             transform: translateY(0);
             opacity: 1;
         }
@@ -143,24 +145,25 @@
 
             <div class="max-w-[1400px] mx-auto w-full relative z-10">
                 <div class="mb-12">
-                    <span class="reveal-overflow">
-                        <span class="reveal-content text-xs font-light tracking-[0.5em] uppercase text-white/50 mb-8 block pl-1">Brand Strategist & Creative Designer</span>
-                    </span>
+                    <div class="reveal-text">
+                        <span class="text-xs font-light tracking-[0.5em] uppercase text-white/50 mb-8 block pl-1">Brand Strategist & Creative Designer</span>
+                    </div>
                     
                     <h1 class="font-display font-semibold text-[11vw] leading-[0.82] tracking-tighter text-white uppercase italic mix-blend-screen">
-                        <div class="reveal-overflow"><span class="reveal-content block">Design</span></div><br>
-                        <div class="reveal-overflow"><span class="reveal-content block">Estratégico</span></div><br>
-                        <div class="reveal-overflow"><span class="reveal-content block text-transparent" style="-webkit-text-stroke: 1px rgba(255,255,255,0.8);">& Marcas.</span></div>
+                        <div class="reveal-text"><span class="block">Design</span></div><br>
+                        <div class="reveal-text"><span class="block">Estratégico</span></div><br>
+                        <div class="reveal-text"><span class="block text-transparent" style="-webkit-text-stroke: 1px rgba(255,255,255,0.8);">& Marcas.</span></div>
                     </h1>
                 </div>
                 
                 <div class="flex flex-col md:flex-row justify-between items-end gap-12 mt-24 border-t border-white/10 pt-12">
                     <div class="flex flex-col md:flex-row gap-8 items-center md:items-center">
-                        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-2xl group cursor-none reveal-overflow">
-                            <img src="./assets/img/gui-profile.jpg" alt="Guilherme Gonçalves" class="reveal-content luxury-filter w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-700">
+                        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-2xl group cursor-none reveal-text">
+                            <span class="block w-full h-full"> <img src="./assets/img/gui-profile.jpg" alt="Guilherme Gonçalves" class="luxury-filter w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-700">
+                            </span>
                         </div>
-                        <p class="reveal-overflow max-w-md text-lg md:text-xl font-light leading-relaxed text-light/70 text-center md:text-left">
-                            <span class="reveal-content block">Especialista em unir <span class="text-white font-normal">identidade visual</span> e posicionamento estratégico.</span>
+                        <p class="max-w-md text-lg md:text-xl font-light leading-relaxed text-light/70 text-center md:text-left reveal-text">
+                            <span class="block">Especialista em unir <span class="text-white font-normal">identidade visual</span> e posicionamento estratégico.</span>
                         </p>
                     </div>
                     
@@ -275,9 +278,9 @@
                 
                 // 3. Dispara animações do Hero
                 setTimeout(() => {
-                    document.querySelectorAll('.reveal-content').forEach((el, index) => {
+                    document.querySelectorAll('.reveal-text').forEach((el, index) => {
                         setTimeout(() => {
-                            el.parentElement.classList.add('reveal-active');
+                            el.classList.add('reveal-active');
                         }, index * 100);
                     });
                 }, 500);
@@ -289,24 +292,20 @@
         const cursor = document.getElementById('cursor');
         
         document.addEventListener('mousemove', (e) => {
-            // Move o cursor
             cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
         });
 
-        // Efeito Hover em Links
         document.querySelectorAll('a, button, .group, .cursor-none').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.style.transform += ' scale(3)';
                 cursor.style.mixBlendMode = 'difference';
             });
             el.addEventListener('mouseleave', () => {
-                // Reseta escala (mantendo posição via mousemove)
                 cursor.style.transform = cursor.style.transform.replace(' scale(3)', '');
                 cursor.style.mixBlendMode = 'difference';
             });
         });
 
-        // Botão Magnético
         const magneticBtn = document.getElementById('magnetic-btn');
         if(magneticBtn) {
             magneticBtn.addEventListener('mousemove', (e) => {
@@ -345,7 +344,7 @@
             document.getElementById("progress-bar").style.width = scrolled + "%";
         };
 
-        // --- 5. GALERIA (LIGHTBOX) ---
+        // --- 5. GALERIA (CORRIGIDA + LOOP) ---
         const projects = {
             'coxinhoca': ['./assets/img/coxinhoca-hero.jpg', './assets/img/coxinhoca-detail1.jpg', './assets/img/coxinhoca-detail2.jpg'],
             'ciara': ['./assets/img/ciara-hero.jpg', './assets/img/ciara-detail1.jpg', './assets/img/ciara-detail2.jpg'],
@@ -372,8 +371,8 @@
                 container.appendChild(wrapper);
             });
 
-            // RESET SCROLL
-            container.scrollLeft = 0;
+            // FIX: RESETA O SCROLL PARA 0 INSTANTANEAMENTE
+            container.scrollTo({ left: 0, behavior: 'instant' });
 
             lightbox.classList.remove('hidden');
             setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
@@ -389,7 +388,24 @@
         }
 
         function scrollGallery(direction) {
-            container.scrollBy({ left: direction * window.innerWidth, behavior: 'smooth' });
+            const width = window.innerWidth;
+            const currentScroll = container.scrollLeft;
+            const maxScroll = container.scrollWidth - width;
+
+            // LÓGICA DE LOOP (INFINITO FEEL)
+            let newScroll = currentScroll + (direction * width);
+
+            // Se tentar ir além do fim (direita), volta pro começo
+            if (newScroll > maxScroll + 50) { // +50 margem de erro
+                 container.scrollTo({ left: 0, behavior: 'smooth' });
+            } 
+            // Se tentar ir antes do começo (esquerda), vai pro fim
+            else if (newScroll < -50) {
+                 container.scrollTo({ left: maxScroll, behavior: 'smooth' });
+            } 
+            else {
+                 container.scrollBy({ left: direction * width, behavior: 'smooth' });
+            }
         }
         
         container.addEventListener('wheel', (evt) => {
